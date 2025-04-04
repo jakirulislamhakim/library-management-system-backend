@@ -16,7 +16,19 @@ router.get('/', MemberControllers.getAllMembers);
 router.get(
   '/:memberId',
   validateReq.params(MemberValidations.uuidValidationSchema),
-  MemberControllers.getMemberById,
+  MemberControllers.getMemberByMemberId,
 );
 
+router.patch(
+  '/:memberId',
+  validateReq.params(MemberValidations.uuidValidationSchema),
+  validateReq.body(MemberValidations.updateMemberValidationSchema),
+  MemberControllers.updateMemberByMemberId,
+);
+
+router.delete(
+  '/:memberId',
+  validateReq.params(MemberValidations.uuidValidationSchema),
+  MemberControllers.deletedMemberByMemberId,
+);
 export const MemberRoutes = router;

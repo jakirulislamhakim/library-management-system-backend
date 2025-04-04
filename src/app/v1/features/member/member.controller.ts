@@ -23,9 +23,9 @@ const getAllMembers = catchAsync(async (req, res) => {
   });
 });
 
-const getMemberById = catchAsync(async (req, res) => {
+const getMemberByMemberId = catchAsync(async (req, res) => {
   const { memberId } = req.params;
-  const payload = await MemberServices.getMembersByIdFromDB(memberId);
+  const payload = await MemberServices.getMemberByMemberIdFromDB(memberId);
 
   sendApiResponse(res, {
     statusCode: httpStatus.OK,
@@ -34,8 +34,34 @@ const getMemberById = catchAsync(async (req, res) => {
   });
 });
 
+const updateMemberByMemberId = catchAsync(async (req, res) => {
+  const { memberId } = req.params;
+  const payload = await MemberServices.updateMemberByMemberIdIntoDB(
+    memberId,
+    req.body,
+  );
+  sendApiResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Member updated successfully',
+    payload,
+  });
+});
+
+const deletedMemberByMemberId = catchAsync(async (req, res) => {
+  const { memberId } = req.params;
+  const payload = await MemberServices.deleteMemberByMemberIdIntoDB(memberId);
+
+  sendApiResponse(res, {
+    statusCode: httpStatus.OK,
+    message: 'Member successfully deleted',
+    payload,
+  });
+});
+
 export const MemberControllers = {
   createMember,
   getAllMembers,
-  getMemberById,
+  getMemberByMemberId,
+  updateMemberByMemberId,
+  deletedMemberByMemberId,
 };

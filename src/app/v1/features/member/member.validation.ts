@@ -1,5 +1,13 @@
 import { z } from 'zod';
 
+const uuidValidationSchema = z.object({
+  memberId: z
+    .string({
+      required_error: 'Book ID is required',
+    })
+    .uuid('Invalid UUID format'),
+});
+
 const createMemberValidationSchema = z.object({
   name: z.string({
     required_error: 'Name is required',
@@ -23,15 +31,13 @@ const createMemberValidationSchema = z.object({
     }),
 });
 
-const uuidValidationSchema = z.object({
-  memberId: z
-    .string({
-      required_error: 'Book ID is required',
-    })
-    .uuid('Invalid UUID format'),
-});
+const updateMemberValidationSchema = createMemberValidationSchema.partial();
+// .refine((data) => Object.keys(data).length > 0, {
+//   message: 'At least one field must be provided',
+// });
 
 export const MemberValidations = {
-  createMemberValidationSchema,
   uuidValidationSchema,
+  createMemberValidationSchema,
+  updateMemberValidationSchema,
 };

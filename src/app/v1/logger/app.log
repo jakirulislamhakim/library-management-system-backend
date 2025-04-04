@@ -1,0 +1,161 @@
+[info]: timestamp:2025-04-04 11:42:02 AM traceId:[e6671e3b-3df5-45ca-9860-bed1a905f5be] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2
+[error]: timestamp:2025-04-04 11:42:02 AM traceId:[e6671e3b-3df5-45ca-9860-bed1a905f5be] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2 msg: Validation error!
+[info]: timestamp:2025-04-04 11:42:04 AM traceId:[8156e424-6086-49b4-900b-16d998219ac2] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2
+[error]: timestamp:2025-04-04 11:42:04 AM traceId:[8156e424-6086-49b4-900b-16d998219ac2] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2 msg: Validation error!
+[info]: timestamp:2025-04-04 11:42:13 AM traceId:[f381b664-a5d9-49c8-b40d-a5f7fee2861d] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 11:42:13 AM traceId:[f381b664-a5d9-49c8-b40d-a5f7fee2861d] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 11:42:16 AM traceId:[27c8ad97-5cc3-4531-8710-27d281a7db6d] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 11:42:16 AM traceId:[27c8ad97-5cc3-4531-8710-27d281a7db6d] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:01:13 PM traceId:[a5a3c660-7b32-4c51-941a-558c85c2ee96] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:01:13 PM traceId:[a5a3c660-7b32-4c51-941a-558c85c2ee96] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:01:26 PM traceId:[5c9caa0d-924e-41b5-a59e-8296e53c77b8] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:01:26 PM traceId:[5c9caa0d-924e-41b5-a59e-8296e53c77b8] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:01:31 PM traceId:[7743e4b7-0b57-4f2f-aaad-27bf7d15ab66] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:01:31 PM traceId:[7743e4b7-0b57-4f2f-aaad-27bf7d15ab66] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:02:02 PM traceId:[5649305f-8b4c-4d96-b243-efc07c601278] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:02:02 PM traceId:[5649305f-8b4c-4d96-b243-efc07c601278] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:02:03 PM traceId:[42ffef1b-a2be-40ed-9d45-d0e77d12d946] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:02:03 PM traceId:[42ffef1b-a2be-40ed-9d45-d0e77d12d946] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:02:05 PM traceId:[f2595059-d2f9-4d13-9efb-b5a1513c7e5c] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:02:05 PM traceId:[f2595059-d2f9-4d13-9efb-b5a1513c7e5c] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:02:06 PM traceId:[eef7cfb5-fe37-44bc-b182-b6a111a15dfc] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:02:06 PM traceId:[eef7cfb5-fe37-44bc-b182-b6a111a15dfc] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:02:06 PM traceId:[8ed8bd00-eec2-4b78-b529-2e71cfd65e20] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:02:06 PM traceId:[8ed8bd00-eec2-4b78-b529-2e71cfd65e20] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, null, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 12:05:27 PM traceId:[1be3a177-2d49-44b4-91c1-4c31623e6ca6] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 12:05:27 PM traceId:[1be3a177-2d49-44b4-91c1-4c31623e6ca6] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `23502`. Message: `Failing row contains (9b05bafa-4dc0-4442-b932-a291a75fc254, Unknown, null, null, 2025-04-02 11:58:52.921).`
+[info]: timestamp:2025-04-04 14:43:38 PM traceId:[0fa5981f-27ad-41b3-962c-dc1378b3a6a1] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 14:46:25 PM traceId:[4a0881e8-f5ee-4f7a-91fe-23d93ae15bfb] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 14:47:22 PM traceId:[0ddd0cbc-e020-4dea-8fc5-c0992dadc018] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:08:40 PM traceId:[92d6bce6-152d-4830-8214-7fbabdcf1762] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:09:20 PM traceId:[b262b9f3-6735-4aeb-8cfb-d95301b57977] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:10:33 PM traceId:[851259aa-caf4-4685-89f0-30ede4d18c2e] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:10:35 PM traceId:[78951f37-8856-420a-a534-aca18ce7432f] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:10:39 PM traceId:[fae93d37-d831-455f-aa25-276e0284bf8e] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 15:10:39 PM traceId:[fae93d37-d831-455f-aa25-276e0284bf8e] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: No valid fields to update
+[info]: timestamp:2025-04-04 15:10:41 PM traceId:[765eb070-0541-4fef-8e79-8b1c9c99947b] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 15:10:41 PM traceId:[765eb070-0541-4fef-8e79-8b1c9c99947b] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: No valid fields to update
+[info]: timestamp:2025-04-04 15:10:42 PM traceId:[fc8bc617-f2f4-4c7c-a753-acb272b44a03] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 15:10:42 PM traceId:[fc8bc617-f2f4-4c7c-a753-acb272b44a03] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: No valid fields to update
+[info]: timestamp:2025-04-04 15:10:43 PM traceId:[c7b2a4a8-ceed-4e14-85a7-1c94e08eb3bf] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 15:10:43 PM traceId:[c7b2a4a8-ceed-4e14-85a7-1c94e08eb3bf] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: No valid fields to update
+[info]: timestamp:2025-04-04 15:10:45 PM traceId:[cde1d146-3dbb-4c3d-9b9b-c23322a0ff29] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:14:00 PM traceId:[0eef3f50-d653-462e-a1fd-478083ffeba8] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:14:46 PM traceId:[c2f981e6-18d0-4238-b5ae-9601069a5da6] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:15:23 PM traceId:[cbc5c33c-ad8f-48d2-9f3a-80f610d0356d] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:22:46 PM traceId:[f713f7f4-af7d-458e-8c51-3b96896c9d73] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:25:24 PM traceId:[6bcb5df6-b7d6-4761-884a-09d72a32c16e] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:26:00 PM traceId:[0703ccd2-57cd-454f-b20f-c97d28b08307] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 15:27:28 PM traceId:[e16650e3-57b0-41e3-b304-458ff9627051] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 15:27:28 PM traceId:[e16650e3-57b0-41e3-b304-458ff9627051] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$queryRaw()` invocation:
+
+
+Raw query failed. Code: `42601`. Message: `ERROR: syntax error at or near "$1"`
+[info]: timestamp:2025-04-04 15:30:23 PM traceId:[288493d7-63cf-47e6-9c44-bf2fc6b150f6] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 15:30:23 PM traceId:[288493d7-63cf-47e6-9c44-bf2fc6b150f6] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$executeRaw()` invocation:
+
+
+Raw query failed. Code: `42601`. Message: `ERROR: syntax error at or near "$1"`
+[info]: timestamp:2025-04-04 18:09:36 PM traceId:[864d36c8-c02e-4944-9864-99b3f74ba8df] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 18:09:36 PM traceId:[864d36c8-c02e-4944-9864-99b3f74ba8df] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: 
+Invalid `prisma.$executeRawUnsafe()` invocation:
+
+
+Raw query failed. Code: `42601`. Message: `ERROR: trailing junk after numeric literal at or near "9b05bafa"`
+[info]: timestamp:2025-04-04 18:11:19 PM traceId:[adc78786-eb3c-44b4-8562-f542bddeb324] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[error]: timestamp:2025-04-04 18:11:20 PM traceId:[adc78786-eb3c-44b4-8562-f542bddeb324] msg: method: PATCH: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254 msg: updateMember is not defined
+[info]: timestamp:2025-04-04 18:13:45 PM traceId:[4190297c-1025-4ee8-adc8-1dd6e6ca0417] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:15:10 PM traceId:[d236f285-6b45-4cc7-af4a-54328243df2b] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:15:53 PM traceId:[c4faaa56-b240-4046-9173-bfb3317042a1] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:47:19 PM traceId:[c177c321-3634-4195-95f2-c3592d2cd6ce] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:51:54 PM traceId:[d9869d0e-b61e-4f1b-8338-e5b2294ca9e0] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:52:08 PM traceId:[bde8b755-9f94-44c2-9073-c3f8aa2bf82e] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:55:10 PM traceId:[ad6da00d-e9c0-4474-94fa-409764517181] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:56:18 PM traceId:[e09cc70e-8b26-46d5-90c3-a7e169d7ef25] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:57:08 PM traceId:[f9fb43bb-aa52-45f4-b279-0d6fbd365511] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 18:58:40 PM traceId:[9b3d5802-a6b6-466b-81d9-2673b7d5bdab] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:01:33 PM traceId:[82fffca3-9925-4ac6-a440-0d61ff3ea2fa] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:01:36 PM traceId:[1f465d32-dd81-4a33-972d-9f010157e658] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:01:41 PM traceId:[85429504-be95-4066-b2c5-9291ac81f31f] msg:Incoming request: PATCH /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:09:42 PM traceId:[e684f553-f99b-4fa4-89e0-8ab1bc8094db] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2
+[error]: timestamp:2025-04-04 19:09:42 PM traceId:[e684f553-f99b-4fa4-89e0-8ab1bc8094db] msg: method: GET: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2 msg: Validation error!
+[info]: timestamp:2025-04-04 19:09:44 PM traceId:[cb9fcb7d-7d67-473d-a4e6-e9fa26c90803] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2
+[error]: timestamp:2025-04-04 19:09:44 PM traceId:[cb9fcb7d-7d67-473d-a4e6-e9fa26c90803] msg: method: GET: /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc2 msg: Validation error!
+[info]: timestamp:2025-04-04 19:09:59 PM traceId:[5ea49743-e652-4c94-a25b-5c7c477ef689] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:10:00 PM traceId:[da58f3a4-4c61-4d92-9904-9f5a93c4cfd0] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:10:54 PM traceId:[35ccf20f-bc6d-4d76-90cc-aa53c42aca7d] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:10:55 PM traceId:[f05f6f68-db8d-4db9-93d0-e05954bf44e8] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:10:56 PM traceId:[b1e1418f-6e22-4e17-83ac-61e338b07143] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:11:02 PM traceId:[87441e2a-478c-43a9-b5a7-2c8f3e9ca4c2] msg:Incoming request: GET /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:17:03 PM traceId:[5baa5d51-dc82-408e-80cd-222d3eef39b8] msg:Incoming request: DELETE /api/v1/members/9b05bafa-4dc0-4442-b932-a291a75fc254
+[info]: timestamp:2025-04-04 19:18:43 PM traceId:[493e3803-14a5-444c-85cc-cf1c1329a12a] msg:Incoming request: DELETE /api/v1/members/0eff2589-5ddf-4cf3-a296-c74c467e8553
+[info]: timestamp:2025-04-04 19:18:51 PM traceId:[519511de-2730-4b39-82aa-25b87d7deb2e] msg:Incoming request: DELETE /api/v1/members/0eff2589-5ddf-4cf3-a296-c74c467e8553
+[error]: timestamp:2025-04-04 19:18:51 PM traceId:[519511de-2730-4b39-82aa-25b87d7deb2e] msg: method: DELETE: /api/v1/members/0eff2589-5ddf-4cf3-a296-c74c467e8553 msg: 
+Invalid `prisma.member.delete()` invocation in
+C:\Users\User\Desktop\ph-level2-assingment\8.library-management-system-test\src\app\v1\features\member\member.service.ts:87:51
+
+  84 //   DELETE FROM members WHERE "memberId" = ${memberId} RETURNING *;
+  85 // `;
+  86 
+→ 87 const deletedMember = await prisma.member.delete(
+An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.
+[info]: timestamp:2025-04-04 19:18:52 PM traceId:[9954e054-3557-4c03-9e2b-895ef093ccb4] msg:Incoming request: DELETE /api/v1/members/0eff2589-5ddf-4cf3-a296-c74c467e8553
+[error]: timestamp:2025-04-04 19:18:52 PM traceId:[9954e054-3557-4c03-9e2b-895ef093ccb4] msg: method: DELETE: /api/v1/members/0eff2589-5ddf-4cf3-a296-c74c467e8553 msg: 
+Invalid `prisma.member.delete()` invocation in
+C:\Users\User\Desktop\ph-level2-assingment\8.library-management-system-test\src\app\v1\features\member\member.service.ts:87:51
+
+  84 //   DELETE FROM members WHERE "memberId" = ${memberId} RETURNING *;
+  85 // `;
+  86 
+→ 87 const deletedMember = await prisma.member.delete(
+An operation failed because it depends on one or more records that were required but not found. Record to delete does not exist.
+[info]: timestamp:2025-04-04 19:19:45 PM traceId:[669c136e-f182-451c-8798-d80a80f47bb8] msg:Incoming request: DELETE /api/v1/members/a609be96-9a42-487d-92df-78454bf2fd91
+[info]: timestamp:2025-04-04 19:21:54 PM traceId:[22318f41-a168-4887-b816-cf8811695410] msg:Incoming request: GET /api/v1/members
+[info]: timestamp:2025-04-04 19:21:57 PM traceId:[90feb99b-3220-455b-b718-98a8bcc5ae92] msg:Incoming request: GET /api/v1/members
+[info]: timestamp:2025-04-04 19:21:59 PM traceId:[0bdb94ce-0cfb-489b-8615-a17c48bbc405] msg:Incoming request: GET /api/v1/members
