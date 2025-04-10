@@ -1,2205 +1,535 @@
-openapi: '3.0.0'
-
+openapi: 3.0.0
 info:
-  title: Recipe Sharing Community
+  title: Library Management System API
   description: |
-    The Recipe Sharing Community API allows users to share their favorite recipes and search for recipes based on ingredients, title, or description. Users can also perform actions such as adding, updating, deleting recipes, upvoting or downvoting recipes, and adding comments. Additionally, the platform includes features like followers and following functionality.
-
-    Some recipes are marked as premium and require a subscription plan for access. Admins and super admins manage subscription plans, oversee user management, and handle premium content access. While regular users can sign up and log in to the application, super admins have advanced permissions to add, update, or delete both users and recipes.
+    The Library Management System API is a RESTful backend service built to manage books, 
+    library members, and their borrowing activities efficiently. It enables CRUD operations
+    on books and members, as well as borrowing and returning functionality for library users.
+    This system is intended for use by library staff to maintain records and monitor
+    borrowing behavior, including overdue returns.
   version: '1.0.0'
   contact:
     name: Jakirul Islam Hakim
-    email: jakirulisamhakim@gmail.com
-    url: https://hakim-portfolio-web.vercel.app/
+    email: jakirulislamhakim@gmail.com
+    url: https://www.linkedin.com/in/jakirulislamhakim
 
 servers:
-  - url: http://localhost:3000/api/v1
+  - url: http://localhost:500/api/v1
     description: Local server
 
 tags:
-  - name: auth
-    description: Endpoints for user authentication, including sign up, sign in, and password reset.
-  - name: user
-    description: Endpoints related to user profile management.
-  - name: follows
-    description: Endpoints for managing user followers and following relationships.
-  - name: recipes
-    description: Endpoints for managing recipes, including creation, retrieval, updating, and deletion. Supports image uploads and premium content management.
-  - name: ratings
-    description: Endpoints for rating recipes, including adding, deleting, and retrieving ratings.
-  - name: votes
-    description: Endpoints for upvoting and downvoting recipes and removing votes.
-  - name: comments
-    description: Endpoints for adding, deleting, and retrieving comments on recipes.
-  - name: subscriptionPlans
-    description: Endpoints for admin or super admin to manage subscription plans, including adding, and deleting plans.
-  - name: subscription
-    description: Endpoints for managing user subscriptions, including adding, updating, and deleting subscriptions.
+  - name: Books
+    description: Operations related to books
 
 paths:
-  # AUTHENTICATION ROUTES
-  /auth/registration:
+  /books:
     post:
-      operationId: createUser
-      summary: Registration a new user
-      description: User can Registration with a email password
+      operationId: createBook
+      summary: Create a new book
+      description: |
+        This endpoint allows you to add a new book to the library's collection. You need to provide the book's title, author, and publication year.
       tags:
-        - auth
+        - Books
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              allOf:
-                - type: object
-                  properties:
-                    fullName:
-                      type: string
-                      example: Jakirul Islam Hakim
-                  required: ['fullName']
-                - $ref: '#/components/schemas/userDTO'
+        $ref: '#/components/requestBodies/CreatedBook'
       responses:
-        201:
-          description: Successfully created user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Welcome! Your account has been created successfully
-                  accessToken:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikhha2ltIiwiaWF0IjoxNTE2MjM5MDIyfQ._iXTScqTXCc4-prKy6isth5zp2HKquyddAriFO6n80A
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/userSchema'
-                      links:
-                        $ref: '#/components/schemas/linksSchema'
-        400:
-          $ref: '#/components/responses/400'
-        409:
-          $ref: '#/components/responses/409'
-        500:
-          $ref: '#/components/responses/500'
-  /auth/login:
-    post:
-      operationId: loginUser
-      tags:
-        - auth
-      summary: Login an existing user .
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                identifier:
-                  description: The username or email of the user.
-                  type: string
-                  example: hakim_h4
-                password:
-                  type: string
-                  minimum: 8
-                  maximum: 16
-                  pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
-                  example: Strong!Pass9
-              required: ['identifier', 'password']
-      responses:
-        200:
-          description: Successfully login user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Login successful. Welcome back!
-                  accessToken:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6Ikhha2ltIiwiaWF0IjoxNTE2MjM5MDIyfQ._iXTScqTXCc4-prKy6isth5zp2HKquyddAriFO6n80A
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/userSchema'
-        400:
-          $ref: '#/components/responses/400'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /auth/change-password:
-    patch:
-      operationId: changeUserPassword
-      security:
-        - bearerAuth: []
-      tags:
-        - auth
-      summary: Allows a logged-in user to change their password.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                oldPassword:
-                  type: string
-                  minimum: 8
-                  maximum: 16
-                  pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
-                  format: password
-                  example: Strong!Pass9
-                newPassword:
-                  type: string
-                  minimum: 8
-                  maximum: 16
-                  pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
-                  format: password
-                  example: newPass123
-              required: ['oldPassword', 'newPassword']
-      responses:
-        200:
-          description: Successfully change password
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your password has been successfully changed.
-                  data:
-                    type: object
-                    example:
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /auth/forget-password:
-    post:
-      operationId: forgetPassword
-      tags:
-        - auth
-      summary: Initiates the process of resetting the password .
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  example: hakim@gmail.com
-              required: ['email']
-      responses:
-        200:
-          description: Requested forget password.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: We’ve sent you an email with instructions to reset your password.
-                  data:
-                    type: object
-                    example:
-        400:
-          $ref: '#/components/responses/400'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /auth/reset-password/{token}:
-    post:
-      operationId: resetPassword
-      tags:
-        - auth
-      summary: Completes the password reset process.
-      parameters:
-        - in: path
-          name: token
-          required: true
-          schema:
-            type: string
-          description: The token received in the email.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                newPassword:
-                  type: string
-                  example: New!Pass9
-              required: ['newPassword']
-      responses:
-        200:
-          description: Password reset successfully.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Password has been successfully reset.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-                      links:
-                        $ref: '#/components/schemas/linksSchema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /auth/refresh:
-    post:
-      operationId: getNewAccessToken
-      tags:
-        - auth
-      summary: Get new access token by refresh token
-      responses:
-        200:
-          description: Get new access token using valid refresh token.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: New access token retrieved successfully.
-                  accessToken:
-                    type: string
-                    example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImphaGlkdWxpc2xhbWhha2ltNTNAZ21haWwuY29tIiwicm9sZSI6InVzZXIiLCJpYXQiOjE3MzYyNjYwODQsImV4cCI6MTczNjg3MDg4NH0.fPaTtBAAY5lcuw3Zko0gyTNQjICzK0VGhVd3o4VaPkg
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-        400:
-          $ref: '#/components/responses/400'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-  # USER ROUTES
-  /users/profile:
-    get:
-      operationId: getUserProfile
-      security:
-        - bearerAuth: []
-      tags:
-        - user
-      summary: Logged in user get their own profile data.
-      responses:
-        200:
-          description: Successfully get user profile
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: User profile information has been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/userSchema'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-    patch:
-      operationId: updateUserProfile
-      security:
-        - bearerAuth: []
-      tags:
-        - user
-      summary: Logged in user update their own profile data.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                fullName:
-                  type: string
-                  example: Jakirul Islam Hakim
-                bio:
-                  type: string
-                  format: text
-                  example: Hi, I am Hakim. I love to cook and share recipes. You can follow me for more interesting recipes.
-      responses:
-        200:
-          description: Successfully updated user profile data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: User profile information has been successfully updated.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/userSchema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /users/profile/change-username:
-    patch:
-      operationId: changeUsersUsername
-      security:
-        - bearerAuth: []
-      tags:
-        - user
-      summary: Logged in user change their own username.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                  minimum: 4
-                  maximum: 20
-                  example: hakim224242
-              required: ['username']
-      responses:
-        200:
-          description: Successfully updated user username
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your username has been successfully updated.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        properties:
-                          username:
-                            type: string
-                            example: hakim224242
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        409:
-          $ref: '#/components/responses/409'
-        500:
-          $ref: '#/components/responses/500'
-
-  # USER FOLLOWERS ROUTES
-  /following:
-    post:
-      operationId: followingUser
-      security:
-        - bearerAuth: []
-      tags:
-        - follows
-      summary: Logged in user follow another user.
-      requestBody:
-        $ref: '#/components/requestBodies/followingUser'
-      responses:
-        201:
-          description: Successfully followed user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: You are now following {username}!
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-    delete:
-      operationId: removedFollowingUser
-      security:
-        - bearerAuth: []
-      tags:
-        - follows
-      summary: Logged in user can unfollow already followed user.
-      requestBody:
-        $ref: '#/components/requestBodies/followingUser'
-      responses:
-        204:
-          description: Successfully unfollowed user
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: You have unfollowed {username}.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-    get:
-      operationId: getFollowingAndFollowers
-      security:
-        - bearerAuth: []
-      tags:
-        - follows
-      summary: Logged in user get their following and followers list.
-      parameters:
-        - name: expand
-          in: query
-          schema:
-            type: string
-            enum: [following, followers, both]
-          required: false
-          description: The filter to apply (following, followers, or both).
-      responses:
-        200:
-          description: Successfully get following and followers list
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your following list has been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        properties:
-                          followingCount:
-                            type: number
-                            example: 5
-                          followersCount:
-                            type: number
-                            example: 10
-                          # followingDetails:
-                          #   type: array
-                          #   items:
-                          #     type: object
-                          #     properties:
-                          #       _id:
-                          #         type: string
-                          #         example: 5f92cbf10cf217478ba56754
-                          #       username:
-                          #         type: string
-                          #         example: hakim224242
-                          #       profileImg:
-                          #         type: string
-                          #         format: url
-                          #         example: https://i.ibb.co.com/4jr3Rn6/no-images.png
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-  # RECIPES ROUTES
-  /recipes:
-    post:
-      operationId: createRecipe
-      security:
-        - bearerAuth: []
-      tags:
-        - recipes
-      summary: Logged in user can create a new recipe.
-      requestBody:
-        $ref: '#/components/requestBodies/recipe'
-      responses:
-        201:
-          description: Successfully created recipe
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your recipe has been successfully posted!
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/recipeSchema'
-                      links:
-                        $ref: '#/components/schemas/linksSchema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-    get:
-      operationId: getAllRecipes
-      tags:
-        - recipes
-      summary: Get all recipes
-      parameters:
-        - '$ref': '#/components/parameters/pageParam'
-        - '$ref': '#/components/parameters/limitParam'
-
-      responses:
-        200:
-          description: Successfully get all recipes
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: All recipes have been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/recipeSchema'
-                      pagination:
-                        $ref: '#/components/schemas/paginationSchema'
+        '201':
+          $ref: '#/components/responses/CreatedBook'
         '400':
-          $ref: '#/components/responses/400'
+          $ref: '#/components/responses/BadRequest'
         '500':
-          $ref: '#/components/responses/500'
-  /recipes/{id}:
+          $ref: '#/components/responses/InternalServerError'
     get:
-      operationId: getRecipeById
+      operationId: getAllBooks
+      summary: Get all books
+      description: |
+        This endpoint retrieves a list of all books in the library's collection.
       tags:
-        - recipes
-      summary: Get a recipe by id
-      parameters:
-        - '$ref': '#/components/parameters/idPathParam'
+        - Books
       responses:
-        200:
-          description: Successfully get recipe by id
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Recipe has been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/recipeSchema'
-        400:
-          $ref: '#/components/responses/400'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
+        '200':
+          $ref: '#/components/responses/GetAllBooks'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /books/{bookId}:
+    get:
+      operationId: getBookByBookId
+      summary: Get a book by ID
+      description: |
+        This endpoint retrieves a specific book from the library's collection using its unique identifier.
+      tags:
+        - Books
+      parameters:
+        - $ref: '#/components/parameters/BookId'
+
+      responses:
+        '200':
+          $ref: '#/components/responses/GetBookByBookId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     patch:
-      operationId: updateRecipe
-      security:
-        - bearerAuth: []
+      operationId: updateBookByBookId
+      summary: Update a book by ID
+      description: |
+        This endpoint updates the details of a specific book in the library's collection using its unique identifier.
       tags:
-        - recipes
-      summary: Logged in user can update their own recipe.
+        - Books
       parameters:
-        - '$ref': '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/BookId'
       requestBody:
-        $ref: '#/components/requestBodies/updateRecipe'
+        $ref: '#/components/requestBodies/UpdatedBook'
       responses:
-        200:
-          description: Successfully updated recipe
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your recipe has been successfully updated.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/recipeSchema'
-                      links:
-                        $ref: '#/components/schemas/linksSchema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
+        '200':
+          $ref: '#/components/responses/UpdateBookByBookId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
     delete:
-      operationId: deleteRecipe
-      security:
-        - bearerAuth: []
+      operationId: deleteBookByBookId
+      summary: Delete a book by ID
+      description: |
+        This endpoint deletes a specific book from the library's collection using its unique identifier.
       tags:
-        - recipes
-      summary: Logged in user can delete their own recipe.
+        - Books
       parameters:
-        - '$ref': '#/components/parameters/idPathParam'
+        - $ref: '#/components/parameters/BookId'
       responses:
-        204:
-          description: Successfully deleted recipe
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your recipe has been successfully deleted.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /recipes/my-posted-recipes:
-    get:
-      operationId: getMyPostedRecipes
-      security:
-        - bearerAuth: []
-      tags:
-        - recipes
-      summary: Logged in user get their own posted recipes.
-      parameters:
-        - '$ref': '#/components/parameters/pageParam'
-        - '$ref': '#/components/parameters/limitParam'
-      responses:
-        200:
-          description: Successfully get my posted recipes
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your posted recipes have been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/recipeSchema'
-                      pagination:
-                        $ref: '#/components/schemas/paginationSchema'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  # ADMIN only route recipes route
-  /recipes/violation:
-    patch:
-      operationId: changeViolationStatus
-      security:
-        - bearerAuth: []
-      tags:
-        - recipes
-      summary: Only ADMIN can change violation status of a recipe.
-      description: When user break the community guidelines, admin can change the violation status of the recipe. violations post only show who post the recipe.
-      requestBody:
-        $ref: '#/components/requestBodies/recipeId'
-      responses:
-        200:
-          description: Successfully updated violation status
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Recipe violation status has been successfully updated.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/recipeSchema'
+        '200':
+          $ref: '#/components/responses/DeleteBookByBookId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
 
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-  # RATINGS ROUTES
-  /rating:
-    post:
-      operationId: addRating
-      security:
-        - bearerAuth: []
-      tags:
-        - ratings
-      summary: Logged in user can add rating to a recipe.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                recipeId:
-                  type: string
-                  example: 5f92cbf10cf217478ba56754
-                rating:
-                  type: integer
-                  example: 5
-              required: ['recipeId', 'rating']
-      responses:
-        201:
-          description: Successfully added rating
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your rating has been successfully added.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/ratingSchema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /rating/{id}:
-    delete:
-      operationId: deleteRating
-      security:
-        - bearerAuth: []
-      tags:
-        - ratings
-      summary: Logged in user can delete their own rating by rating id.
-      parameters:
-        - '$ref': '#/components/parameters/idPathParam'
-      responses:
-        204:
-          description: Successfully deleted rating
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your rating has been successfully deleted.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /rating/{recipeId}:
-    get:
-      operationId: getRatingByRecipeId
-      tags:
-        - ratings
-      summary: Get all ratings by recipe id
-      parameters:
-        - $ref: '#/components/parameters/recipeIdPathParam'
-      responses:
-        200:
-          description: Successfully get all ratings for the recipe.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: All ratings have been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/ratingSchema'
-        400:
-          $ref: '#/components/responses/400'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /rating/average-rating/{recipeId}:
-    get:
-      operationId: getAverageRatingByRecipeId
-      tags:
-        - ratings
-      summary: Get average rating by recipe id
-      parameters:
-        - '$ref': '#/components/parameters/recipeIdPathParam'
-      responses:
-        200:
-          description: Successfully get average rating for the recipe.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Average rating has been successfully retrieved for the recipe.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        properties:
-                          averageRating:
-                            type: number
-                            example: 4.5
-                      links:
-                        $ref: '#/components/schemas/linksSchema'
-        400:
-          $ref: '#/components/responses/400'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-  # VOTES ROUTES
-  /votes:
-    post:
-      operationId: upvoteRecipe
-      security:
-        - bearerAuth: []
-      tags:
-        - votes
-      summary: Logged in user can upvote or downvote a recipes.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              allOf:
-                - type: object
-                  properties:
-                    voteType:
-                      type: string
-                      enum: ['upvote , downvote']
-                      example: upvote
-                    recipe:
-                      type: string
-                      format: objectId
-                      example: 5f92cbf10cf217478ba93ere
-      responses:
-        201:
-          description: Successfully upvoted recipe
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Liked successfully. Share your thoughts in a comment!
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        properties:
-                          totalUpvotes:
-                            type: number
-                            example: 127
-                          totalDownvotes:
-                            type: number
-                            example: 12
-
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /votes/{id}/remove:
-    delete:
-      operationId: removeUpvote
-      security:
-        - bearerAuth: []
-      tags:
-        - votes
-      summary: Logged in user can remove their upvote or down from a recipe.
-      parameters:
-        - '$ref': '#/components/parameters/idPathParam'
-      responses:
-        200:
-          description: Successfully removed upvote
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your like has been removed.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        properties:
-                          totalUpvotes:
-                            type: number
-                            example: 125
-                          totalDownvotes:
-                            type: number
-                            example: 13
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-  # COMMENTS ROUTES
-  /comments:
-    post:
-      operationId: addComment
-      security:
-        - bearerAuth: []
-      tags:
-        - comments
-      summary: Logged in user can add comment to a recipe.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                recipe:
-                  type: string
-                  format: objectId
-                  example: 5f92cbf10cf217478ba93ere
-                body:
-                  type: string
-                  example: This is a great recipe. I will try it soon.
-
-      responses:
-        201:
-          description: Successfully added comment
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your comment has been successfully added.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/commentSchema'
-
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /comments/{recipeId}:
-    get:
-      operationId: getCommentsByRecipeId
-      tags:
-        - comments
-      summary: Get all comments by recipe id
-      parameters:
-        - '$ref': '#/components/parameters/recipeIdPathParam'
-      responses:
-        200:
-          description: Successfully get all comments for the recipe.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: All comments have been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/commentSchema'
-        400:
-          $ref: '#/components/responses/400'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /comments/{id}:
-    patch:
-      operationId: updateComment
-      security:
-        - bearerAuth: []
-      tags:
-        - comments
-      summary: Logged in user can update their own comment.
-      parameters:
-        - '$ref': '#/components/parameters/idPathParam'
-      requestBody:
-        $ref: '#/components/requestBodies/comment'
-      responses:
-        200:
-          description: Successfully updated comment
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your comment has been successfully updated.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/commentSchema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-    delete:
-      operationId: deleteComment
-      security:
-        - bearerAuth: []
-      tags:
-        - comments
-      summary: Logged in user can delete their own comment by comment id.
-      parameters:
-        - '$ref': '#/components/parameters/idPathParam'
-      responses:
-        204:
-          description: Successfully deleted comment
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your comment has been successfully deleted.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-  # USER SUBSCRIPTION PLAN ROUTES
-  /subscription-plans:
-    post:
-      operationId: createSubscriptionPlan
-      security:
-        - bearerAuth: []
-      tags:
-        - subscriptionPlans
-      summary: Only ADMIN or SUPER_ADMIN can create a new subscription plan.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/subscriptionsPlanDTO'
-
-      responses:
-        201:
-          description: Successfully created subscription plan
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Subscription plan has been successfully created.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/subscriptionPlanSChema'
-
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        409:
-          $ref: '#/components/responses/409'
-        500:
-          $ref: '#/components/responses/500'
-    get:
-      operationId: getAllSubscriptionPlans
-      tags:
-        - subscriptionPlans
-      summary: Get all subscription plans
-      responses:
-        200:
-          description: Successfully get all subscription plans
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: All subscription plans have been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/subscriptionPlanSChema'
-        500:
-          $ref: '#/components/responses/500'
-  /subscription-plans/{id}:
-    delete:
-      operationId: deleteSubscriptionPlan
-      security:
-        - bearerAuth: []
-      tags:
-        - subscriptionPlans
-      summary: Only ADMIN or SUPER_ADMIN can delete or active flag false a subscription plan.
-      parameters:
-        - '$ref': '#/components/parameters/idPathParam'
-      responses:
-        200:
-          description: Successfully deleted subscription plan
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Successfully deactivate subscription plan.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        $ref: '#/components/schemas/subscriptionPlanSChema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-  # SUBSCRIPTION ROUTES
-  /users/subscription:
-    post:
-      operationId: subscribeUser
-      security:
-        - bearerAuth: []
-      tags:
-        - subscription
-      summary: Logged in user can subscribe to a subscription plan.
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                subscriptionPlanId:
-                  type: string
-                  example: 5f92cbf10cf217478ba56754
-              required: ['subscriptionPlanId']
-      responses:
-        201:
-          description: Successfully subscribed to a subscription plan
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: You have successfully subscribed to the plan.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: object
-                        example: null
-                      links:
-                        $ref: '#/components/schemas/linksSchema'
-        400:
-          $ref: '#/components/responses/400'
-        401:
-          $ref: '#/components/responses/401'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-    get:
-      operationId: getAllSubscriptionsDetailsForUser
-      security:
-        - bearerAuth: []
-      tags:
-        - subscription
-      summary: Logged in user get all their subscription details.
-      responses:
-        200:
-          description: Successfully get all subscription details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: All subscription details have been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/subscriptionSchema'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-  /users/subscription/latest:
-    get:
-      operationId: getUserSubscription
-      security:
-        - bearerAuth: []
-      tags:
-        - subscription
-      summary: Logged in user get their own latest subscription Details.
-      responses:
-        200:
-          description: Successfully get user subscription details
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success:
-                    type: boolean
-                    example: true
-                  message:
-                    type: string
-                    example: Your subscription details has been successfully retrieved.
-                  data:
-                    type: object
-                    properties:
-                      payload:
-                        $ref: '#/components/schemas/subscriptionSchema'
-        401:
-          $ref: '#/components/responses/401'
-        403:
-          $ref: '#/components/responses/403'
-        404:
-          $ref: '#/components/responses/404'
-        500:
-          $ref: '#/components/responses/500'
-
-# all reuseable components
+# ALL REUSABLE COMPONENTS
 components:
-  # security schemas
-  securitySchemes:
-    bearerAuth:
-      description: Use the JWT token received from /auth/login or /auth/register.
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
-
-  # request body schemas
-  requestBodies:
-    recipeId:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              recipe:
-                type: string
-                example: 5f92cbf10cf217478ba56754
-            required: ['followingId']
-    followingUser:
-      required: true
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              followingId:
-                type: string
-                example: 5f92cbf10cf217478ba56754
-            required: ['followingId']
-    recipe:
-      required: true
-      content:
-        multipart/form-data:
-          schema:
-            type: object
-            properties:
-              images:
-                type: array
-                items:
-                  type: string
-                  format: binary
-              title:
-                type: string
-                example: Perfect Scrambled Eggs
-              description:
-                type: string
-                example: Learn how to make perfect scrambled eggs with this easy recipe.
-              ingredients:
-                type: array
-                items:
-                  type: string
-                example: [eggs, butter, salt, pepper]
-              steps:
-                type: array
-                items:
-                  type: string
-                example:
-                  [
-                    Crack the eggs into a bowl,
-                    Whisk the eggs,
-                    Melt butter in a pan,
-                    Pour in the eggs,
-                    Stir gently until set,
-                  ]
-              cookingTime:
-                type: integer
-                example: 10
-              status:
-                type: string
-                enum:
-                  - published
-                  - unpublished
-                default: published
-              isPostPremium:
-                type: boolean
-                default: false
-            required:
-              - images
-              - title
-              - description
-              - ingredients
-              - steps
-              - cookingTime
-    updateRecipe:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              title:
-                type: string
-                example: Perfect Scrambled Eggs
-              status:
-                type: string
-                enum:
-                  - published
-                  - unpublished
-                example: published
-              description:
-                type: string
-                example: Learn how to make perfect scrambled eggs with this easy recipe.
-    comment:
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              body:
-                type: string
-                example: This is a great recipe. I will try it soon.
-            required: ['body']
-
-  # reusable all schemas
+  # ALL SCHEMAS
   schemas:
-    userDTO:
+    # Data Model
+    BookBase:
       type: object
       properties:
-        email:
-          type: string
-          format: email
-          example: hakim@gmail.com
-        password:
-          type: string
-          minimum: 8
-          maximum: 16
-          pattern: ^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$
-          format: password
-          example: 12345Hi&ds
-      required: ['email', 'password']
-    userInfo:
-      type: object
-      properties:
-        _id:
-          type: string
-          example: '2345jdfjhsdf3254hj5'
-        username:
-          type: string
-          example: hakim224242
-        profileImg:
-          type: string
-          format: url
-          example: https://i.ibb.co.com
-        fullName:
-          type: string
-          example: Jakirul Islam Hakim
-    recipeInfo:
-      type: object
-      properties:
-        _id:
-          type: string
-          example: '2345jdfjhsdf3254hj5'
         title:
           type: string
-          example: Perfect Scrambled Eggs
-        images:
+          description: The title of the book
+          example: To Kill a Mockingbird
+          minLength: 1
+          maxLength: 255
+        genre:
           type: string
-          example: https://i.ibb.co.com/img343.png
-        isPostPremium:
-          type: boolean
-          example: false
-      required: ['_id', 'title', 'images', 'isPostPremium']
-    subscriptionsPlanDTO:
-      type: object
-      properties:
-        name:
-          type: string
-          example: Premium
-        price:
-          type: number
-          example: 10
-        durationDays:
-          type: number
-          example: 30
-      required: ['name', 'price', 'durationDays']
-    # user schemas
-    userSchema:
-      allOf:
-        - type: object
-          properties:
-            _id:
-              type: string
-              example: '2345jdfjhsdf3254hj5'
-            fullName:
-              type: string
-              example: Jakirul Islam Hakim
-            username:
-              type: string
-              example: hakim224242
-            email:
-              type: string
-              format: email
-              example: hakim@gmail.com
-            profileImg:
-              type: string
-              format: url
-              example: https://i.ibb.co.com/4jr3Rn6/no-images.png
-            bio:
-              type: string
-              nullable: true
-              example: ~
-            role:
-              type: string
-              enum:
-                - superAdmin
-                - admin
-                - user
-              example: user
-            isUserPremium:
-              type: boolean
-              example: false
-            subscriptionEndDate:
-              type: string
-              nullable: true
-              example: null
-            # isDeleted:
-            #   type: boolean
-            #   example: false
-            # passwordChangeAt:
-            #   type: string
-            #   format: date-time
-            #   example: 2024-12-27T17:02:42.861Z
-          required:
-            - _id
-            - fullName
-            - username
-            - email
-            - profileImg
-            - bio
-            - role
-            - isUserPremium
-            - subscriptionEndDate
-            - isDeleted
-            - passwordChangeAt
-        - $ref: '#/components/schemas/timeStamps'
-    # recipe schemas
-    recipeSchema:
-      allOf:
-        - type: object
-          properties:
-            _id:
-              type: string
-              example: '2345jdfjhsdf3254hj5'
-            user:
-              $ref: '#/components/schemas/userInfo'
-            title:
-              type: string
-              example: Perfect Scrambled Eggs
-            images:
-              type: array
-              items:
-                type: string
-              example:
-                [
-                  https://i.ibb.co.com/4jr3Rn6/no-images.png,
-                  https://i.ib.com/img343.png,
-                ]
-            description:
-              type: string
-              example: Learn how to make perfect scrambled eggs with this easy recipe.
-            ingredients:
-              type: array
-              items:
-                type: string
-              example: [eggs, butter, salt, pepper]
-            steps:
-              type: array
-              items:
-                type: string
-              example:
-                [
-                  Crack the eggs into a bowl,
-                  Whisk the eggs,
-                  Melt butter in a pan,
-                  Pour in the eggs,
-                  Stir gently until set,
-                ]
-            cookingTime:
-              type: integer
-              example: 10
-            status:
-              type: string
-              enum:
-                - published
-                - unpublished
-              example: published
-            isViolated:
-              type: boolean
-              default: false
-            isPostPremium:
-              type: boolean
-              default: false
-            averagesRating:
-              type: integer
-              example: 0
-            totalUpvotes:
-              type: integer
-              example: 0
-            totalDownvotes:
-              type: integer
-              example: 0
-          required:
-            - _id
-            - title
-            - user
-            - images
-            - description
-            - ingredients
-            - steps
-            - cookingTime
-            - status
-            - isPostPremium
-            - averagesRating
-            - totalUpvotes
-            - totalDownvotes
-        - $ref: '#/components/schemas/timeStamps'
-    ratingSchema:
-      type: object
-      properties:
-        _id:
-          type: string
-          example: '2345jdfjhsdf3254hj5'
-        user:
-          $ref: '#/components/schemas/userInfo'
-        recipe:
-          $ref: '#/components/schemas/recipeInfo'
-        rating:
+          description: The genre of the book
+          example: Fiction
+          minLength: 1
+          maxLength: 100
+        publishYear:
           type: integer
+          description: The year the book was published
+          example: 1960
+          minimum: 1900
+          maximum: 2025
+        totalCopies:
+          type: integer
+          description: The total number of copies available in the library
           example: 5
-        createdAt:
+          minimum: 1
+          maximum: 10000
+        availableCopies:
+          type: integer
+          description: The number of copies currently available for borrowing
+          example: 5
+          minimum: 0
+          maximum: 10000
+    BookId:
+      type: object
+      properties:
+        bookId:
           type: string
-          format: date-time
-          example: 2024-12-27T17:02:42.861Z
-      required: ['_id', 'user', 'recipe', 'rating', 'createdAt']
-    commentSchema:
+          format: uuid
+          nullable: false
+          description: The unique identifier for the book
+          example: 123e4567-e89b-12d3-a456-426614174000
+      required:
+        - bookId
+
+    # Response Model
+    # book success response model
+    CreateBookResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: true
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 201
+        message:
+          type: string
+          description: A message providing additional information about the response
+          example: Book created successfully
+        payload:
+          type: object
+          description: payload have multiple properties like data, links,
+          properties:
+            data:
+              nullable: true
+              allOf:
+                - type: object
+                  required:
+                    - bookId
+                    - title
+                    - genre
+                    - publishYear
+                    - totalCopies
+                    - availableCopies
+                - $ref: '#/components/schemas/BookId'
+                - $ref: '#/components/schemas/BookBase'
+      required:
+        - success
+        - statusCode
+        - message
+        - payload
+    GetAllBooksResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: true
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 200
+        message:
+          type: string
+          description: A message providing additional information about the response
+          example: Books retrieved successfully
+        payload:
+          type: object
+          properties:
+            data:
+              description: A list of books in the library's collection
+              type: array
+              items:
+                allOf:
+                  - type: object
+                    required:
+                      - bookId
+                      - title
+                      - genre
+                      - publishYear
+                      - totalCopies
+                      - availableCopies
+                  - $ref: '#/components/schemas/BookId'
+                  - $ref: '#/components/schemas/BookBase'
+      required:
+        - success
+        - statusCode
+        - message
+        - payload
+    GetBookByBookIdResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: true
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 200
+        message:
+          type: string
+          description: A message providing additional information about the response
+          example: Book retrieved successfully
+        payload:
+          type: object
+          properties:
+            data:
+              allOf:
+                - $ref: '#/components/schemas/BookId'
+                - $ref: '#/components/schemas/BookBase'
+                - type: object
+                  required:
+                    - bookId
+                    - title
+                    - genre
+                    - publishYear
+                    - totalCopies
+                    - availableCopies
+      required:
+        - success
+        - statusCode
+        - message
+        - payload
+    UpdateBookByBookIdResponse:
       allOf:
+        - $ref: '#/components/schemas/GetBookByBookIdResponse'
         - type: object
           properties:
-            _id:
+            message:
               type: string
-              example: '2345jdfjhsdf3254hj5'
-            user:
-              $ref: '#/components/schemas/userInfo'
-            recipe:
-              $ref: '#/components/schemas/recipeInfo'
-            body:
-              type: string
-              example: This is a great recipe. I will try it soon.
-            isEdited:
-              type: boolean
-              example: false
-          required: ['_id', 'user', 'recipe', 'isEdited', 'body']
-        - $ref: '#/components/schemas/timeStamps'
-    subscriptionPlanSChema:
+              description: A message providing additional information about the response
+              example: Book updated successfully
+    DeleteBookByBookIdResponse:
       allOf:
-        - properties:
-            _id:
+        - $ref: '#/components/schemas/GetBookByBookIdResponse'
+        - type: object
+          properties:
+            message:
               type: string
-              example: 5f92cbf10cf217478ba56754
-        - $ref: '#/components/schemas/subscriptionsPlanDTO'
-        - properties:
-            isActive:
-              type: boolean
-              example: true
-          required: ['_id', 'isActive']
-    subscriptionSchema:
-      allOf:
-        - properties:
-            _id:
-              type: string
-              example: '2345jdfjhsdf3254hj5'
-            user:
-              $ref: '#/components/schemas/userInfo'
-            subscriptionPlan:
-              $ref: '#/components/schemas/subscriptionPlanSChema'
-            paymentMethod:
-              type: string
-              example: ammarpay
-            status:
-              type: string
-              enum: [active, expired]
-              example: active
-            amountPaying:
-              type: number
-              example: 10
-            transactionId:
-              type: string
-              example: 5f92cbf10cf217478ba56754
-            startDate:
-              type: string
-              format: date-time
-              example: 2025-01-01T17:02:42.861Z
-            endDate:
-              type: string
-              format: date-time
-              example: 2025-01-30T17:02:42.861Z
-            createdAt:
-              type: string
-              format: date-time
-              example: 2024-12-27T17:02:42.861Z
+              description: A message providing additional information about the response
+              example: Book deleted successfully
 
-    # timestamps reuseable schema
-    timeStamps:
+    # Error Model
+    BadRequestError:
       type: object
       properties:
-        createdAt:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: false
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 400
+        message:
           type: string
-          format: date-time
-          example: 2024-12-27T17:02:42.861Z
-        updatedAt:
+          description: A message providing additional information about the error
+          example: Validation error
+        errorSources:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+                description: The path of the request that caused the error
+                default: ''
+                example: title
+              message:
+                type: string
+                description: A message describing the error
+                default: ''
+                example: Title is required
+            required:
+              - path
+              - message
+    NotFoundError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: false
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 404
+        message:
           type: string
-          format: date-time
-          example: 2024-12-27T17:02:42.861Z
-      required: ['createdAt', 'updatedAt']
-    # links reusable schema
-    linksSchema:
-      type: object
-      properties:
-        self:
-          type: object
-          properties:
-            href:
-              type: string
-              format: url
-              example: '/auth/register'
-            method:
-              type: string
-              example: POST
-        login:
-          type: object
-          properties:
-            href:
-              type: string
-              format: url
-              example: '/auth/login'
-            method:
-              type: string
-              example: POST
-    # pagination schema
-    paginationSchema:
-      type: object
-      properties:
-        page:
-          type: integer
-          example: 1
-        limit:
-          type: integer
-          example: 10
-        totalItems:
-          type: integer
-          example: 100
-        totalPages:
-          type: integer
-          example: 10
+          description: A message providing additional information about the error
+          example: Book not found
+        errorSources:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+                description: The path of the request that caused the error
+                default: ''
+                example: bookId
+              message:
+                type: string
+                description: A message describing the error
+                default: ''
+                example: Book not found
+            required:
+              - path
+              - message
       required:
-        - page
-        - limit
-        - totalItems
-        - totalPages
-  # reusable all response
+        - success
+        - statusCode
+        - message
+        - errorSources
+    ConflictError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: false
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 409
+        message:
+          type: string
+          description: A message providing additional information about the error
+          example: The user email is already exist
+        errorSources:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+                description: The path of the request that caused the error
+                default: ''
+                example: email
+              message:
+                type: string
+                description: A message describing the error
+                default: ''
+                example: The user email is already exist
+            required:
+              - path
+              - message
+      required:
+        - success
+        - statusCode
+        - message
+        - errorSources
+    InternalServerError:
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: false
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 500
+        message:
+          type: string
+          description: A message providing additional information about the error
+          example: Internal server error
+        errorSources:
+          type: array
+          items:
+            type: object
+            properties:
+              path:
+                type: string
+                description: The path of the request that caused the error
+                default: ''
+                example: ''
+              message:
+                type: string
+                description: A message describing the error
+                default: ''
+                example: 'Internal server error'
+            required:
+              - path
+              - message
+      required:
+        - success
+        - statusCode
+        - message
+        - errorSources
+
+  # ALL REQUESTBODIES
+  requestBodies:
+    CreatedBook:
+      description: Book object that needs to be added
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/BookBase'
+              - type: object
+                required:
+                  - title
+                  - genre
+                  - publishYear
+                  - totalCopies
+                  - availableCopies
+    UpdatedBook:
+      description: Book object that needs to be updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BookBase'
+
+  # ALL RESPONSES
   responses:
-    400:
-      description: Bad request Error
+    # error responses
+    BadRequest:
+      description: Bad Request
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Validation error!
-              errorSources:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    path:
-                      type: string
-                      example: email
-                    message:
-                      type: string
-                      example: email is required
-    401:
-      description: Unauthorized Error
+            $ref: '#/components/schemas/BadRequestError'
+    NotFound:
+      description: Not Found
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Authentication is required to access this resource.
-              errorSources:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    path:
-                      type: string
-                      example: ''
-                    message:
-                      type: string
-                      example: Authentication is required to access this resource.
-    403:
-      description: Forbidden Error
+            $ref: '#/components/schemas/NotFoundError'
+    Conflict:
+      description: Conflict
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: You do not have permission to access this resource.
-              errorSources:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    path:
-                      type: string
-                      example: ''
-                    message:
-                      type: string
-                      example: You do not have permission to access this resource.
-    404:
-      description: Not Found Error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: Account not found. Please check your credentials or sign up.
-              errorSources:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    path:
-                      type: string
-                      example: ''
-                    message:
-                      type: string
-                      example: Account not found. Please check your credentials or sign up.
-    409:
-      description: Conflict Error
-      content:
-        application/json:
-          schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: A user with this email already exists.
-              errorSources:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    path:
-                      type: string
-                      example: ''
-                    message:
-                      type: string
-                      example: A user with this email already exists.
-    500:
+            $ref: '#/components/schemas/ConflictError'
+    InternalServerError:
       description: Internal Server Error
       content:
         application/json:
           schema:
-            type: object
-            properties:
-              success:
-                type: boolean
-                example: false
-              message:
-                type: string
-                example: An unexpected error occurred. Please try again later.
-              errorSources:
-                type: array
-                items:
-                  type: object
-                  properties:
-                    path:
-                      type: string
-                      example: ''
-                    message:
-                      type: string
-                      example: An unexpected error occurred. Please try again later.
-  # parameters
+            $ref: '#/components/schemas/InternalServerError'
+
+    # success responses
+    # book responses
+    CreatedBook:
+      description: Book created successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateBookResponse'
+    GetAllBooks:
+      description: Books retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetAllBooksResponse'
+    GetBookByBookId:
+      description: Book retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetBookByBookIdResponse'
+    UpdateBookByBookId:
+      description: Book updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateBookByBookIdResponse'
+    DeleteBookByBookId:
+      description: Book deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeleteBookByBookIdResponse'
+
+  # ALL REUSABLE PATH & QUERY PARAMETERS
   parameters:
-    idPathParam:
-      name: id
+    BookId:
+      name: bookId
       in: path
       required: true
+      description: The unique identifier of the book
       schema:
         type: string
-        example: 5f92cbf10cf217478ba93ere
-      description: The ID of the resource to retrieve.
-    recipeIdPathParam:
-      name: recipeId
-      in: path
-      required: true
-      schema:
-        type: string
-        example: 5f92cbf10cf217478ba93ere
-      description: The ID of the resource to retrieve.
-    pageParam:
-      name: page
-      in: query
-      required: false
-      schema:
-        type: integer
-        example: 1
-      description: The page number of the results to retrieve.
-    limitParam:
-      name: limit
-      in: query
-      required: false
-      schema:
-        type: integer
-        example: 10
-      description: The number of results per page.
+        format: uuid
