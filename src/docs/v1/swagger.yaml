@@ -20,6 +20,12 @@ servers:
 tags:
   - name: Books
     description: Operations related to books
+  - name: Members
+    description: Operations related to library members
+  - name: Borrows
+    description: Operations related to borrowing books
+  - name: Returns
+    description: Operations related to returning books
 
 paths:
   /books:
@@ -51,7 +57,6 @@ paths:
           $ref: '#/components/responses/GetAllBooks'
         '500':
           $ref: '#/components/responses/InternalServerError'
-
   /books/{bookId}:
     get:
       operationId: getBookByBookId
@@ -107,12 +112,143 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
 
+  # Members
+  /members:
+    post:
+      operationId: createMember
+      summary: Create a new member
+      description: |
+        This endpoint allows you to add a new member to the library's collection. You need to provide the member's name, email, and phone number.
+      tags:
+        - Members
+      requestBody:
+        $ref: '#/components/requestBodies/CreatedMember'
+      responses:
+        '201':
+          $ref: '#/components/responses/CreatedMember'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    get:
+      operationId: getAllMembers
+      summary: Get all members
+      description: |
+        This endpoint retrieves a list of all members in the library's collection.
+      tags:
+        - Members
+      responses:
+        '200':
+          $ref: '#/components/responses/GetAllMembers'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+  /members/{memberId}:
+    get:
+      operationId: getMemberByMemberId
+      summary: Get a member by ID
+      description: |
+        This endpoint retrieves a specific member from the library's collection using its unique identifier.
+      tags:
+        - Members
+      parameters:
+        - $ref: '#/components/parameters/MemberId'
+      responses:
+        '200':
+          $ref: '#/components/responses/GetMemberByMemberId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    patch:
+      operationId: updateMemberByMemberId
+      summary: Update a member by ID
+      description: |
+        This endpoint updates the details of a specific member in the library's collection using its unique identifier.
+      tags:
+        - Members
+      parameters:
+        - $ref: '#/components/parameters/MemberId'
+      requestBody:
+        $ref: '#/components/requestBodies/UpdatedMember'
+      responses:
+        '200':
+          $ref: '#/components/responses/UpdateMemberByMemberId'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+    delete:
+      operationId: deleteMemberByMemberId
+      summary: Delete a member by ID
+      description: |
+        This endpoint deletes a specific member from the library's collection using its unique identifier.
+      tags:
+        - Members
+      parameters:
+        - $ref: '#/components/parameters/MemberId'
+      responses:
+        '200':
+          $ref: '#/components/responses/DeleteMemberByMemberId'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # Borrows
+  /borrows:
+    post:
+      operationId: createBorrow
+      summary: Borrow a book
+      description: |
+        This endpoint allows you to borrow a book from the library's collection.
+      tags:
+        - Borrows
+      requestBody:
+        $ref: '#/components/requestBodies/CreatedBorrow'
+      responses:
+        '200':
+          $ref: '#/components/responses/CreateBorrow'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  # Returns
+  /returns:
+    patch:
+      operationId: returnBook
+      summary: Return a book
+      description: |
+        This endpoint allows you to return a book to the library's collection.
+      tags:
+        - Returns
+      parameters:
+        - $ref: '#/components/parameters/BorrowId'
+      responses:
+        '204':
+          $ref: '#/components/responses/ReturnBorrowBook'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
 # ALL REUSABLE COMPONENTS
 components:
   # ALL SCHEMAS
   schemas:
     # Data Model
-    BookBase:
+    # Book Models
+    BookDTO:
       type: object
       properties:
         title:
@@ -156,137 +292,316 @@ components:
           example: 123e4567-e89b-12d3-a456-426614174000
       required:
         - bookId
+    BookResponseData:
+      type: object
+      properties:
+        data:
+          allOf:
+            - $ref: '#/components/schemas/BookId'
+            - $ref: '#/components/schemas/BookDTO'
+            - type: object
+              required:
+                - bookId
+                - title
+                - genre
+                - publishYear
+                - totalCopies
+                - availableCopies
+      required:
+        - data
 
-    # Response Model
-    # book success response model
+    # Member Models
+    MemberDTO:
+      type: object
+      properties:
+        name:
+          type: string
+          description: The name of the member
+          example: Jakirul Islam Hakim
+          minLength: 1
+          maxLength: 255
+        email:
+          type: string
+          description: The unique email address of the member
+          example: jakirulislamhakim@gmail.com
+          format: email
+          pattern: ^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$
+          minLength: 1
+          maxLength: 255
+        phone:
+          type: string
+          description: The phone number of the member
+          example: +8801736100945
+          pattern: ^\+?\d{1,3}[-.\s]?\(?\d{1,3}\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}$
+          minLength: 1
+          maxLength: 255
+    MemberId:
+      type: object
+      properties:
+        memberId:
+          type: string
+          format: uuid
+          nullable: false
+          description: The unique identifier for the member
+          example: 123e4567-e89b-12d3-a456-426614174000
+      required:
+        - memberId
+    MembershipDate:
+      type: object
+      properties:
+        membershipDate:
+          type: string
+          format: date
+          description: The date the member joined the library
+          example: '2025-01-01T00:00:00.000Z'
+      required:
+        - membershipDate
+    MemberResponseData:
+      type: object
+      properties:
+        data:
+          allOf:
+            - $ref: '#/components/schemas/MemberId'
+            - $ref: '#/components/schemas/MemberDTO'
+            - $ref: '#/components/schemas/MembershipDate'
+            - type: object
+              required:
+                - memberId
+                - name
+                - email
+                - phone
+      required:
+        - data
+
+    # Borrow Models
+    BorrowDTO:
+      allOf:
+        - $ref: '#/components/schemas/BookId'
+        - $ref: '#/components/schemas/MemberId'
+    BorrowId:
+      type: object
+      properties:
+        borrowId:
+          type: string
+          format: uuid
+          nullable: false
+          description: The unique identifier for the borrow
+          example: 123e4567-e89b-12d3-a456-426614174000
+      required:
+        - borrowId
+    BorrowDate:
+      type: object
+      properties:
+        borrowDate:
+          type: string
+          format: date
+          description: The date the book was borrowed
+          example: '2025-01-01T00:00:00.000Z'
+      required:
+        - borrowDate
+    BorrowResponseData:
+      type: object
+      properties:
+        data:
+          allOf:
+            - $ref: '#/components/schemas/BorrowId'
+            - $ref: '#/components/schemas/BorrowDTO'
+            - $ref: '#/components/schemas/BorrowDate'
+      required:
+        - data
+
+    # Generic Response Model
+    GenericSuccessResponse:
+      # book success response model
+      type: object
+      properties:
+        success:
+          type: boolean
+          description: Indicates whether the request was successful
+          example: true
+        statusCode:
+          type: integer
+          description: The HTTP status code of the response
+          example: 200
+        message:
+          type: string
+          description: A message providing additional information about the response
+        payload:
+          type: object
+          description: Payload data associated with the response properties data, links, pagination etc.
+      required:
+        - success
+        - statusCode
+        - message
+        - payload
+
+    # Book Responses Model
     CreateBookResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Indicates whether the request was successful
-          example: true
-        statusCode:
-          type: integer
-          description: The HTTP status code of the response
-          example: 201
-        message:
-          type: string
-          description: A message providing additional information about the response
-          example: Book created successfully
-        payload:
-          type: object
-          description: payload have multiple properties like data, links,
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
           properties:
-            data:
-              nullable: true
-              allOf:
-                - type: object
-                  required:
-                    - bookId
-                    - title
-                    - genre
-                    - publishYear
-                    - totalCopies
-                    - availableCopies
-                - $ref: '#/components/schemas/BookId'
-                - $ref: '#/components/schemas/BookBase'
-      required:
-        - success
-        - statusCode
-        - message
-        - payload
+            statusCode:
+              example: 201
+            message:
+              example: Book created successfully
+            payload:
+              $ref: '#/components/schemas/BookResponseData'
     GetAllBooksResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Indicates whether the request was successful
-          example: true
-        statusCode:
-          type: integer
-          description: The HTTP status code of the response
-          example: 200
-        message:
-          type: string
-          description: A message providing additional information about the response
-          example: Books retrieved successfully
-        payload:
-          type: object
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
           properties:
-            data:
-              description: A list of books in the library's collection
-              type: array
-              items:
-                allOf:
-                  - type: object
-                    required:
-                      - bookId
-                      - title
-                      - genre
-                      - publishYear
-                      - totalCopies
-                      - availableCopies
-                  - $ref: '#/components/schemas/BookId'
-                  - $ref: '#/components/schemas/BookBase'
-      required:
-        - success
-        - statusCode
-        - message
-        - payload
+            message:
+              type: string
+              example: Books retrieved successfully
+            payload:
+              type: object
+              properties:
+                data:
+                  description: A list of books in the library's collection
+                  type: array
+                  items:
+                    allOf:
+                      - type: object
+                        required:
+                          - bookId
+                          - title
+                          - genre
+                          - publishYear
+                          - totalCopies
+                          - availableCopies
+                      - $ref: '#/components/schemas/BookId'
+                      - $ref: '#/components/schemas/BookDTO'
     GetBookByBookIdResponse:
-      type: object
-      properties:
-        success:
-          type: boolean
-          description: Indicates whether the request was successful
-          example: true
-        statusCode:
-          type: integer
-          description: The HTTP status code of the response
-          example: 200
-        message:
-          type: string
-          description: A message providing additional information about the response
-          example: Book retrieved successfully
-        payload:
-          type: object
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
           properties:
-            data:
-              allOf:
-                - $ref: '#/components/schemas/BookId'
-                - $ref: '#/components/schemas/BookBase'
-                - type: object
-                  required:
-                    - bookId
-                    - title
-                    - genre
-                    - publishYear
-                    - totalCopies
-                    - availableCopies
-      required:
-        - success
-        - statusCode
-        - message
-        - payload
+            message:
+              type: string
+              example: Book retrieved successfully
+            payload:
+              $ref: '#/components/schemas/BookResponseData'
     UpdateBookByBookIdResponse:
       allOf:
-        - $ref: '#/components/schemas/GetBookByBookIdResponse'
+        - $ref: '#/components/schemas/GenericSuccessResponse'
         - type: object
           properties:
             message:
               type: string
-              description: A message providing additional information about the response
               example: Book updated successfully
+            payload:
+              $ref: '#/components/schemas/BookResponseData'
     DeleteBookByBookIdResponse:
       allOf:
-        - $ref: '#/components/schemas/GetBookByBookIdResponse'
+        - $ref: '#/components/schemas/GenericSuccessResponse'
         - type: object
           properties:
             message:
               type: string
-              description: A message providing additional information about the response
               example: Book deleted successfully
+            payload:
+              $ref: '#/components/schemas/BookResponseData'
+
+    # Member Responses Model
+    CreateMemberResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
+          properties:
+            statusCode:
+              example: 201
+            message:
+              example: Member created successfully
+            payload:
+              $ref: '#/components/schemas/MemberResponseData'
+    GetAllMembersResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
+          properties:
+            message:
+              example: Members retrieved successfully
+            payload:
+              type: object
+              properties:
+                data:
+                  description: A list of members in the library's collection
+                  type: array
+                  items:
+                    allOf:
+                      - $ref: '#/components/schemas/MemberId'
+                      - $ref: '#/components/schemas/MemberDTO'
+                      - $ref: '#/components/schemas/MembershipDate'
+                      - type: object
+                        required:
+                          - memberId
+                          - name
+                          - email
+                          - phone
+          required:
+            - data
+    GetMemberByMemberIdResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
+          properties:
+            message:
+              example: Member retrieved successfully
+            payload:
+              $ref: '#/components/schemas/MemberResponseData'
+    UpdateMemberByMemberIdResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
+          properties:
+            message:
+              example: Member updated successfully
+            payload:
+              $ref: '#/components/schemas/MemberResponseData'
+    DeleteMemberByMemberIdResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
+          properties:
+            message:
+              example: Member deleted successfully
+            payload:
+              $ref: '#/components/schemas/MemberResponseData'
+
+    # Borrow Responses Model
+    CreateBorrowResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
+          properties:
+            statusCode:
+              example: 201
+            message:
+              example: Book borrowed successfully
+            payload:
+              $ref: '#/components/schemas/BorrowResponseData'
+
+    #  Rerun Borrow Book Response Model
+    RerunBorrowBookResponse:
+      allOf:
+        - $ref: '#/components/schemas/GenericSuccessResponse'
+        - type: object
+          properties:
+            statusCode:
+              example: 204
+            message:
+              example: Book return successfully
+            payload:
+              type: object
+              properties:
+                data:
+                  type: object
+                  nullable: true
+                  example: ~
+          required:
+            - data
 
     # Error Model
     BadRequestError:
@@ -303,7 +618,6 @@ components:
         message:
           type: string
           description: A message providing additional information about the error
-          example: Validation error
         errorSources:
           type: array
           items:
@@ -322,6 +636,7 @@ components:
             required:
               - path
               - message
+
     NotFoundError:
       type: object
       properties:
@@ -360,6 +675,7 @@ components:
         - statusCode
         - message
         - errorSources
+
     ConflictError:
       type: object
       properties:
@@ -398,6 +714,7 @@ components:
         - statusCode
         - message
         - errorSources
+
     InternalServerError:
       type: object
       properties:
@@ -446,7 +763,7 @@ components:
         application/json:
           schema:
             allOf:
-              - $ref: '#/components/schemas/BookBase'
+              - $ref: '#/components/schemas/BookDTO'
               - type: object
                 required:
                   - title
@@ -460,7 +777,38 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/BookBase'
+            $ref: '#/components/schemas/BookDTO'
+
+    # Member requests body
+    CreatedMember:
+      description: Member object that needs to be added
+      required: true
+      content:
+        application/json:
+          schema:
+            allOf:
+              - $ref: '#/components/schemas/MemberDTO'
+              - type: object
+                required:
+                  - name
+                  - email
+                  - phone
+    UpdatedMember:
+      description: Member object that needs to be updated
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/MemberDTO'
+
+    # Borrow requests body
+    CreatedBorrow:
+      description: Borrow object that needs to be added
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BorrowDTO'
 
   # ALL RESPONSES
   responses:
@@ -523,6 +871,54 @@ components:
           schema:
             $ref: '#/components/schemas/DeleteBookByBookIdResponse'
 
+    # member responses
+    CreatedMember:
+      description: Member created successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateMemberResponse'
+    GetAllMembers:
+      description: Members retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetAllMembersResponse'
+    GetMemberByMemberId:
+      description: Member retrieved successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/GetMemberByMemberIdResponse'
+    UpdateMemberByMemberId:
+      description: Member updated successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/UpdateMemberByMemberIdResponse'
+    DeleteMemberByMemberId:
+      description: Member deleted successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/DeleteMemberByMemberIdResponse'
+
+    # borrow responses
+    CreateBorrow:
+      description: Book borrowed successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/CreateBorrowResponse'
+
+    # return borrow book responses
+    ReturnBorrowBook:
+      description: Book returned successfully
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/RerunBorrowBookResponse'
+
   # ALL REUSABLE PATH & QUERY PARAMETERS
   parameters:
     BookId:
@@ -530,6 +926,24 @@ components:
       in: path
       required: true
       description: The unique identifier of the book
+      schema:
+        type: string
+        format: uuid
+
+    MemberId:
+      name: memberId
+      in: path
+      required: true
+      description: The unique identifier of the member
+      schema:
+        type: string
+        format: uuid
+
+    BorrowId:
+      name: borrowId
+      in: path
+      required: true
+      description: The unique identifier of the borrow book
       schema:
         type: string
         format: uuid
