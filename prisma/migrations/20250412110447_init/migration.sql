@@ -1,21 +1,14 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "books" (
+    "bookId" TEXT NOT NULL,
+    "title" TEXT NOT NULL,
+    "genre" TEXT NOT NULL,
+    "publishedYear" INTEGER NOT NULL,
+    "totalCopies" INTEGER NOT NULL,
+    "availableCopies" INTEGER NOT NULL,
 
-  - You are about to drop the `borrow` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `member` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "borrow" DROP CONSTRAINT "borrow_bookId_fkey";
-
--- DropForeignKey
-ALTER TABLE "borrow" DROP CONSTRAINT "borrow_memberId_fkey";
-
--- DropTable
-DROP TABLE "borrow";
-
--- DropTable
-DROP TABLE "member";
+    CONSTRAINT "books_pkey" PRIMARY KEY ("bookId")
+);
 
 -- CreateTable
 CREATE TABLE "members" (

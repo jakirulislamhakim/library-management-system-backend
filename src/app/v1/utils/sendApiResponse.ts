@@ -37,6 +37,7 @@ export const sendApiResponse = <T>(res: Response, data: TResponseData<T>) => {
 
   return res.status(data?.statusCode).json({
     success: true,
+    statusCode: data?.statusCode,
     message: data?.message,
     accessToken: data.accessToken,
     data: dataResponse,

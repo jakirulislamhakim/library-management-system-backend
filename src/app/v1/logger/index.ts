@@ -18,10 +18,10 @@ export const appLogger = winston.createLogger({
   ),
   transports: [
     new winston.transports.Console(),
-    new winston.transports.File({ filename: 'src/app/v1/logger/app.log' }),
-    new winston.transports.File({
-      filename: 'src/app/v1/logger/error.log',
-      level: 'error',
-    }),
+    // new winston.transports.File({ filename: 'src/app/v1/logger/app.log' }),
+    // new winston.transports.File({
+    //   filename: 'src/app/v1/logger/error.log',
+    //   level: 'error',
+    // }),
   ],
 });

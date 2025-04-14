@@ -25,7 +25,11 @@ app.use(
 );
 
 // swagger ui docs
-app.use('/api-docs/v1', swaggerUi.serve, swaggerUi.setup(swaggerV1Doc));
+app.use(
+  '/api-docs/v1',
+  swaggerUi.serve,
+  swaggerUi.setup(swaggerV1Doc, { explorer: true }),
+);
 
 // all application routes for v1
 app.use('/api/v1', V1ModulesRoutes);
