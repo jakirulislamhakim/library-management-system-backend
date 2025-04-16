@@ -14,10 +14,20 @@ info:
     url: https://www.linkedin.com/in/jakirulislamhakim
 
 servers:
-  - url: http://localhost:500/api/v1
+  - url: http://localhost:500/api/{version}
     description: Local server
-  - url: https://library-management-system-backend-gray.vercel.app/api/v1
+    variables:
+      version:
+        default: v1
+        enum:
+          - v1
+  - url: https://library-management-system-backend-gray.vercel.app/api/{version}
     description: Production server
+    variables:
+      version:
+        default: v1
+        enum:
+          - v1
 
 tags:
   - name: Books

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { BookRoutes } from '../features/book/book.route';
 import { MemberRoutes } from '../features/member/member.route';
 import { BorrowBookRoutes } from '../features/borrowBook/borrowBook.route';
+import { TestRoutes } from '../features/test/test.route';
 
 type TModulesRoutes = {
   path: string;
@@ -22,6 +23,10 @@ const moduleRoutes: TModulesRoutes[] = [
   {
     path: '/',
     route: BorrowBookRoutes,
+  },
+  {
+    path: '/test',
+    route: TestRoutes,
   },
 ];
 

@@ -1,10 +1,12 @@
 import { ErrorRequestHandler, NextFunction } from 'express';
 import httpStatus from 'http-status';
 import { ZodError } from 'zod';
+import { Prisma } from '@prisma/client';
 import { TErrorSources } from '../interface/errorInterface';
 import config from '../config';
 import handleZodError from '../errors/handleZodError';
 import handleDuplicateError from '../errors/handleDuplicateError';
+import handlePrismaError from '../errors/handlePrismaError';
 import AppError from '../errors/AppError';
 import { appLogger } from '../logger';
 
@@ -51,6 +53,11 @@ export const globalErrorHandler: ErrorRequestHandler = (
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorSources = simplifiedError.errorSources;
+  } else if (err instanceof Prisma.PrismaClientKnownRequestError) {
+    const simplifiedError = handlePrismaError(err);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorSources = simplifiedError.errorSources;
   } else if (err instanceof AppError) {
     statusCode = err.statusCode;
     message = err.message;
@@ -81,7 +88,7 @@ export const globalErrorHandler: ErrorRequestHandler = (
     success: false,
     message,
     errorSources,
-    err, //! only for development purpose
+    // err, //! only for development purpose
     stack: config.NODE_ENV === 'development' ? err?.stack : null,
   });
 };
